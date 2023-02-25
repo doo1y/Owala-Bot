@@ -8,9 +8,7 @@ from frames.userinfo import UserInfo
 
 class AppContainer(tk.Tk):
     # __init__ function for class tkinterApp
-    def __init__(self, session):
-        # driver = kwargs["driver"]
-        self.session = session
+    def __init__(self):
 
         # __init__ function for class Tk
         tk.Tk.__init__(self)

@@ -1,27 +1,20 @@
-# from seleniumrequests import Chrome
-# from selenium.webdriver.chrome.options import Options
-import requests, json
+import tkinter
 
-# options = Options()
 
-# options.headless = True
+class MainWindow(object):
+    def __init__(self):
+        print("initiated ..")
+        self.root = tkinter.Tk()
 
-# driver = Chrome(options=options)
+    def __enter__(self):
+        print("entered ..")
+        return self
 
-link = "https://elb.deposit.shopifycs.com/sessions"
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        print("Main Window is closing, call any function you'd like here!")
 
-payload = {
-    "credit_card": {
-        "number": "1234123412341234",
-        "name": "FNAME LNAME",
-        "month": "12",
-        "year": "2025",
-        "verification_value": "177",
-    }
-}
 
-# res = driver.request("POST", link, json=payload)
+with MainWindow() as w:
+    w.root.mainloop()
 
-res = requests.post(link, json=payload)
-print(json.loads(res.text)["id"])
-print(res)
+print("end of script ..")

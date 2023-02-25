@@ -1,9 +1,12 @@
 from frames.appcontainer import AppContainer
-import time, json, requests
+import time, json, requests, asyncio
 
-session = requests.session()
 
-app = AppContainer(session)
-app.title("Color-Drop Bot")
-app.geometry("430x450")
-app.mainloop()
+def startapp():
+    app = AppContainer()
+    app.title("Color-Drop Bot")
+    app.geometry("430x450")
+    app.mainloop()
+
+
+startapp()
