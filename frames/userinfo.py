@@ -140,7 +140,7 @@ class UserInfo(ttk.Frame):
         prev_btn.grid(column=0, columnspan=1, row=15)
         next_btn.grid(column=1, columnspan=1, row=15)
 
-    def fill(self, event):
+    def fill(self):
         n = "Province: " if self.country_entry.get() == "Canada" else self.label_choice
         v = (
             [

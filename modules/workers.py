@@ -2,10 +2,22 @@ import json, time, requests, random, urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from bs4 import BeautifulSoup
 from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.chrome.service import Service as ChromiumService
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.core.utils import ChromeType
 
-driver = webdriver.Chrome()
+options = Options()
+options.headless = True
+
+driver = webdriver.Chrome(
+    service=ChromiumService(
+        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
+    ),
+    options=options,
+)
 
 session = requests.session()
 
@@ -180,6 +192,7 @@ def make_purchase(checkout_route, cookies):
 
 def startbot(item):
     try:
+
         res = session.get("https://owalalife.com/products.json")
         resbody = json.loads(res.text)
         target = next(x for x in resbody["products"] if x["title"] == item)
@@ -198,8 +211,7 @@ def startbot(item):
             get_checkout_gateway(
                 checkout_route=checkout_route, cookies=cart_res.cookies
             )
-            return make_purchase(
-                checkout_route=checkout_route, cookies=cart_res.cookies
-            )
+            r = make_purchase(checkout_route=checkout_route, cookies=cart_res.cookies)
+            return r.status_code
     except Exception as e:
         return e
