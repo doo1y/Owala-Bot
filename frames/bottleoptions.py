@@ -1,7 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
 from frames.running import RunningFrame
-from modules.workers import retrieve_items, startbot
+from modules.workers import retrieve_items
+from modules.simple_workers import startbot
 import asyncio
 
 
@@ -30,13 +31,15 @@ class BottleOptions(ttk.Frame):
 
         self.prev_btn.grid(column=0, row=2, columnspan=1)
         self.run_btn.grid(column=1, row=2, columnspan=1)
-
-        self.status = ttk.Label(self)
-        self.status.grid(row=3, column=0, columnspan=2)
+        self.status_var = tk.StringVar(self, value="Waiting to Start Watching...")
+        self.message_widget = tk.Message(self, textvariable=self.status_var)
+        self.message_widget.grid(row=3, column=0, columnspan=2)
 
     def find(self):
         selected = self.combo_box.get()
-        self.status.config(text="Bot is running...")
-        bot = startbot(selected)
-        if not isinstance(bot, Exception):
-            self.status.config(text=f"Bot finished!\n Result: {bot}")
+        self.status_var.set("Bot is running...")
+        self.message_widget.config(textvariable=self.status_var)
+        self.message_widget.
+        startbot(selected, self.message_widget)
+        # if not isinstane(bot, Exception):
+        #     self.status.config(text=f"Bot finished!\n Result: {bot}")

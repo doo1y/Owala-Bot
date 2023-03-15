@@ -1,23 +1,14 @@
 import json, time, requests, random, urllib3
 from urllib3.exceptions import InsecureRequestWarning
 from bs4 import BeautifulSoup
-from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.service import Service as ChromiumService
 from webdriver_manager.chrome import ChromeDriverManager
 from webdriver_manager.core.utils import ChromeType
+from .simple_workers import driver, By
 
 options = Options()
 options.headless = True
-
-driver = webdriver.Chrome(
-    service=ChromiumService(
-        ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-    ),
-    options=options,
-)
 
 session = requests.session()
 

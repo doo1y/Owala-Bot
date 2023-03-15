@@ -1,19 +1,91 @@
 import json, re, datetime
 import tkinter as tk
 from tkinter import ttk
-from modules.workers import data
+from modules.simple_workers import data
+
 
 # Start App
 class UserInfo(ttk.Frame):
     def __init__(self, parent, controller):
         ttk.Frame.__init__(self, parent)
 
-        self.label_choice = "State: "
-        n = self.label_choice
-        self.title = ttk.Label(
-            self, text="Please Provide The Following Information For Payment Processing"
-        )
+        self.entry_dict = {
+            "Canada": [
+                "Alberta AB",
+                "British Columbia BC",
+                "Manitoba MB",
+                "New Brunswick NB",
+                "Newfoundland and Labrador NL",
+                "Nova Scotia NS",
+                "Northwest Territories NT",
+                "Nunavut NU",
+                "Ontario  ON",
+                "Prince Edward Island PE",
+                "Quebec QC",
+                "Saskatchewan SK",
+                "Yukon YT",
+            ],
+            "United States": [
+                "Alabama AL",
+                "Alaska AK",
+                "Arizona AZ",
+                "Arkansas AR",
+                "California CA",
+                "Colorado CO",
+                "Connecticut CT",
+                "Delaware DE",
+                "Florida FL",
+                "Georgia GA",
+                "Hawaii HI",
+                "Idaho ID",
+                "Illinois IL",
+                "Indiana IN",
+                "Iowa IA",
+                "Kansas KS",
+                "Kentucky KY",
+                "Louisiana LA",
+                "Maine ME",
+                "Maryland MD",
+                "Massachusetts MA",
+                "Michigan MI",
+                "Minnesota MN",
+                "Mississippi MS",
+                "Missouri MO",
+                "Montana MT",
+                "Nebraska NE",
+                "Nevada NV",
+                "New Hampshire NH",
+                "New Jersey NJ",
+                "New Mexico NM",
+                "New York NY",
+                "North Carolina NC",
+                "North Dakota ND",
+                "Ohio OH",
+                "Oklahoma OK",
+                "Oregon OR",
+                "Pennsylvania PA",
+                "Rhode Island RI",
+                "South Carolina SC",
+                "South Dakota SD",
+                "Tennessee TN",
+                "Texas TX",
+                "Utah UT",
+                "Vermont VT",
+                "Virginia VA",
+                "Washington WA",
+                "West Virginia WV",
+                "Wisconsin WI",
+                "Wyoming WY",
+            ],
+        }
+
+        self.country_var = tk.StringVar(self)
+        self.state_var = tk.StringVar(self)
+        self.country_var.trace("w", self.update)
+
+        self.title = ttk.Label(self, text="Please Provide The Following Information")
         self.title.grid(column=0, row=0, columnspan=2)
+
         self.email_label = ttk.Label(self, text="Email: ")
         self.phone_label = ttk.Label(self, text="Phone: ")
         self.fname_label = ttk.Label(self, text="First Name: ")
@@ -21,7 +93,7 @@ class UserInfo(ttk.Frame):
         self.addr_label = ttk.Label(self, text="Address: ")
         self.addr2_label = ttk.Label(self, text="Address 2 (Optional): ")
         self.country_label = ttk.Label(self, text="Country: ")
-        self.state_label = ttk.Label(self, text=n)
+        self.state_label = ttk.Label(self, text="State: ")
         self.city_label = ttk.Label(self, text="City: ")
         self.zip_label = ttk.Label(self, text="Zip: ")
         self.card_label = ttk.Label(self, text="Card Number: ")
@@ -29,71 +101,18 @@ class UserInfo(ttk.Frame):
         self.yr_label = ttk.Label(self, text="Exp Year: ")
         self.cvc_label = ttk.Label(self, text="CVC: ")
 
-        self.entry_choice = [
-            "Alaska",
-            "Alabama",
-            "Arkansas",
-            "Arizona",
-            "California",
-            "Colorado",
-            "Connecticut",
-            "District of Columbia",
-            "Delaware",
-            "Florida",
-            "Georgia",
-            "Hawaii",
-            "Iowa",
-            "Idaho",
-            "Illinois",
-            "Indiana",
-            "Kansas",
-            "Kentucky",
-            "Louisiana",
-            "Massachusetts",
-            "Maryland",
-            "Maine",
-            "Michigan",
-            "Minnesota",
-            "Missouri",
-            "Mississippi",
-            "Montana",
-            "North Carolina",
-            "North Dakota",
-            "Nebraska",
-            "New Hampshire",
-            "New Jersey",
-            "New Mexico",
-            "Nevada",
-            "New York",
-            "Ohio",
-            "Oklahoma",
-            "Oregon",
-            "Pennsylvania",
-            "Rhode Island",
-            "South Carolina",
-            "South Dakota",
-            "Tennessee",
-            "Texas",
-            "Utah",
-            "Virginia",
-            "Vermont",
-            "Washington",
-            "Wisconsin",
-            "West Virginia",
-            "Wyoming",
-        ]
-        v = self.entry_choice
         self.email_entry = ttk.Entry(self)
         self.phone_entry = ttk.Entry(self)
         self.fname_entry = ttk.Entry(self)
         self.lname_entry = ttk.Entry(self)
         self.addr_entry = ttk.Entry(self)
         self.addr2_entry = ttk.Entry(self)
-        self.country_entry = ttk.Combobox(self, values=("United States", "Canada"))
-        self.country_entry.bind("<<ComboboxSelected>>", self.fill)
-        self.country_entry.current(0)
+        self.country_entry = tk.OptionMenu(
+            self, self.country_var, *self.entry_dict.keys()
+        )
+        self.state_entry = tk.OptionMenu(self, self.state_var, "")
+        self.country_var.set("United States")
         self.city_entry = ttk.Entry(self)
-        self.state_entry = ttk.Combobox(self, values=v)
         self.zip_entry = ttk.Entry(self)
         self.card_entry = ttk.Entry(self)
         self.month_entry = ttk.Entry(self)
@@ -129,6 +148,7 @@ class UserInfo(ttk.Frame):
         self.month_entry.grid(column=1, row=12)
         self.yr_entry.grid(column=1, row=13)
         self.cvc_entry.grid(column=1, row=14)
+        self.grid()
 
         prev_btn = ttk.Button(
             self, text="Prev", command=lambda: controller.show_frame("GreetUser")
@@ -140,30 +160,17 @@ class UserInfo(ttk.Frame):
         prev_btn.grid(column=0, columnspan=1, row=15)
         next_btn.grid(column=1, columnspan=1, row=15)
 
-    def fill(self):
-        n = "Province: " if self.country_entry.get() == "Canada" else self.label_choice
-        v = (
-            [
-                "Alberta",
-                "British Columbia",
-                "Manitoba",
-                "New Brunswick",
-                "Newfoundland and Labrador",
-                "Nova Scotia",
-                "Northwest Territories",
-                "Nunavut",
-                "Ontario",
-                "Prince Edward Island",
-                "Quebec",
-                "Saskatchewan",
-                "Yukon",
-            ]
-            if self.country_entry.get() == "Canada"
-            else self.entry_choice
-        )
-        self.state_label.config(text=n)
-        self.state_entry.config(values=v)
-        self.state_entry.current(0)
+    def update(self, *args):
+        countries = self.entry_dict[self.country_var.get()]
+        self.state_var.set(countries[0])
+
+        menu = self.state_entry["menu"]
+        menu.delete(0, "end")
+
+        for country in countries:
+            menu.add_command(
+                label=country, command=lambda nation=country: self.state_var.set(nation)
+            )
 
     def set_obj(self, controller):
         user_data = {
@@ -173,17 +180,21 @@ class UserInfo(ttk.Frame):
             "lname": self.lname_entry.get(),
             "addr": self.addr_entry.get(),
             "addr2": self.addr2_entry.get(),
-            "country": self.country_entry.get(),
+            "country": self.country_var.get(),
             "city": self.city_entry.get(),
-            "state": self.state_entry.get(),
+            "state": self.state_var.get().split(" ")[-1],
             "zip": self.zip_entry.get(),
             "card": self.card_entry.get(),
             "exp_m": self.month_entry.get(),
             "exp_yr": self.yr_entry.get(),
             "cvc": self.cvc_entry.get(),
         }
-        data.update(user_data)
-        controller.show_frame("BottleOptions")
+        for id in user_data:
+            if not len(user_data[id]) and id != "addr2":
+                pass
+            else:
+                data.update(user_data)
+                controller.show_frame("BottleOptions")
 
 
 # TODO : impliment appropriate validations ttk.Entry(s)
