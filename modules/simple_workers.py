@@ -34,14 +34,15 @@ def check_availability():
     while True:
         try:
             driver.get(f"{data['url']}/products/{data['handle']}")
-            driver.find_element(
+            element = driver.find_element(
                 By.XPATH,
-                "//div[@class='color-drop-addcart__product-info']/div[@class='action-button-container']/button['Grab bottle']",
+                "//div[@class='color-drop-addcart__product-info']/div[@class='action-button-container']/button",
             )
-            return True
-        except NoSuchElementException as unreleased:
-
-            time.sleep(timeout)
+            if element.text != "Notify me":
+                return True
+        except Exception as e:
+            print(e)
+        time.sleep(timeout)
 
 
 def fill_checkout_options(status):
@@ -174,6 +175,7 @@ def startbot(item, status):
         if available:
             status.config(text=f"{item} dropped!")
             driver.get(f"{data['url']}/cart/{data['var_id']}:1")
+            # driver.get(f"{data['url']}/cart/43048895283359:1")
 
             status.config(text="Filling out shipping information...")
             fill_checkout_options(status)

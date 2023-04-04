@@ -38,8 +38,7 @@ class BottleOptions(ttk.Frame):
     def find(self):
         selected = self.combo_box.get()
         self.status_var.set("Bot is running...")
-        self.message_widget.config(textvariable=self.status_var)
-        self.message_widget.
+
         startbot(selected, self.message_widget)
         # if not isinstane(bot, Exception):
         #     self.status.config(text=f"Bot finished!\n Result: {bot}")

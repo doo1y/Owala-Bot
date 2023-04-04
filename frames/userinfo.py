@@ -2,6 +2,7 @@ import json, re, datetime
 import tkinter as tk
 from tkinter import ttk
 from modules.simple_workers import data
+from configparser import ConfigParser
 
 
 # Start App
@@ -159,6 +160,9 @@ class UserInfo(ttk.Frame):
         )
         prev_btn.grid(column=0, columnspan=1, row=15)
         next_btn.grid(column=1, columnspan=1, row=15)
+
+    configParser = ConfigParser()
+    configParser.read("db.ini")
 
     def update(self, *args):
         countries = self.entry_dict[self.country_var.get()]
